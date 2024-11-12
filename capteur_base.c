@@ -5,7 +5,7 @@ int main() {
     int msgid;
     struct msg_buffer message;
     //déclaration  des variables capteur
-    float CO2_level = 400.5;// niveau de CO2 en PPM (exemple)
+    float CO2_level = 400.5;// niveau de CO2 en partie par million  (exemple)
     float temperature = 22.3;// temperature en degrés Celsius (exemple)
     float humidity = 45.2; // humidity (exemple)
 
