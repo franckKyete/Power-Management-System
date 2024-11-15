@@ -3,7 +3,7 @@
 void displaySummary(Room* rooms, int size){
 
 
-    printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "Presence", "CO2 (\%)", "Temp (C)", "Consomation (A)", "Lumiere", "Ventilation");
+    printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "Presence", "CO2 (\%)", "Temp (C)", "Consomation (W)", "Lumiere", "Ventilation");
     printf("---------------------------------------------------------------------------------------------------\n");
 
     // Display each row with column separators
@@ -37,9 +37,16 @@ int main(int argc, char **argv){
     rooms[1].power_usage =  2.1;
     rooms[1].light       =  true;
     rooms[1].ventilation =  false;
+
+    rooms[2].presence    =  true;
+    rooms[2].CO2_level   =  21.1;
+    rooms[2].temperature =  23.52;
+    rooms[2].power_usage =  2.1;
+    rooms[2].light       =  true;
+    rooms[2].ventilation =  false;
  
 
     system("clear");
-    displaySummary(rooms, 2);
+    displaySummary(rooms, 3);
     return 0;
 }

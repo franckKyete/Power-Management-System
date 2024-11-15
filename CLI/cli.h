@@ -24,6 +24,7 @@ typedef struct
 
 void displaySummary(Room *rooms, int size);
 void displayMenu();
-void receiveCommand();
+void awaitCommand();
+void fetchData();
 
 #endif
