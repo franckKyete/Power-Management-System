@@ -40,6 +40,7 @@ void *msg_dispatcher(){
     {
         for(int i=0; i<4; i++){
             // Receive the message
+            printf("i : %d\n",i);
             if (msgrcv(msgids[i], &message, sizeof(message.value), 0, IPC_NOWAIT) == -1) {// Remove the IPC_NOWAIT
                 if(errno == ENOMSG){
                     printf("No message received\n");
@@ -49,13 +50,14 @@ void *msg_dispatcher(){
                 }   
             }else{
                 dispatch_msg(&message, i);
-                // Optional: Delete the message queue after receiving
-                if (msgctl(msgids[i], IPC_RMID, NULL) == -1) {
-                    perror("msgctl failed");
-                    exit(1);
-                }
+
+
+                // // Optional: Delete the message queue after receiving
+                // if (msgctl(msgids[i], IPC_RMID, NULL) == -1) {
+                //     perror("msgctl failed");
+                //     exit(1);
+                // }
             }
-            
         }
     }
     pthread_exit(NULL);
@@ -64,10 +66,6 @@ void *msg_dispatcher(){
 
 
 void dispatch_msg(sensor_msg *message, SensorType sensor_type){
-
-
     Sensor *sensor = building->sensors[message->room_id];
-                printf("Hi\n");
     sensor->value = message->value;
-    
 }
