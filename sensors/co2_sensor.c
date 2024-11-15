@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    printf("Sensor for room  %d started\n", (int)room_id);
+    printf("Sensor for room  %d started\n\n", (int)room_id);
 
     // Boucle infinie pour simuler la mesure toutes les 30 secondes
     while (1) {
@@ -48,11 +48,12 @@ int main(int argc, char **argv) {
         message.value = CO2_level;
         
         // Send the message
-        if (msgsnd(msgid, &message, sizeof(message.value), room_id) == -1) {
+        if (msgsnd(msgid, &message, sizeof(message.value), 0) == -1) {
             perror("msgsnd failed");
         }else{
             printf("Message sent: %f\n", message.value);
         }
+        printf("\n");
     }
 }
 
