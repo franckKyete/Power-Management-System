@@ -9,10 +9,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define CAPTEUR_CO2         0
-#define CAPTEUR_PRESENCE    1
-#define CAPTEUR_TEMPERATURE 2
-#define CAPTEUR_ENERGY      3
+#define CAPTEUR_CO2         1
+#define CAPTEUR_PRESENCE    2
+#define CAPTEUR_TEMPERATURE 3
+#define CAPTEUR_ENERGY      4
 
 
 typedef struct {

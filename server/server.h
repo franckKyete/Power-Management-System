@@ -18,7 +18,10 @@ typedef enum {
 } PowerSource;
 
 typedef enum {
-    CO2_SENSOR=0, PRESENCE_SENSOR=1, TEMPERATURE_SENSOR=2, POWER_METER=3
+    CO2_SENSOR=0, 
+    PRESENCE_SENSOR=1, 
+    TEMPERATURE_SENSOR=2, 
+    POWER_METER=3
 } SensorType;
 
 
@@ -42,21 +45,25 @@ typedef struct
 
     bool natural_light;
 
-    Sensor sensors[4];
+    Sensor* sensors[4];
 } Room;
 
 
 typedef struct
 {
-    Room **rooms;
-    Sensor **sensors;
+    Room *rooms[MAX_ROOM];
+    Sensor *sensors[MAX_ROOM*4];
     int size; // Number of rooms
-    
+    PowerSource prefered_power_source;
 } Building;
 
 
-void dispatch_msg(sensor_msg *msg, SensorType sensor_type);
+void dispatch_msg(Building *_building, sensor_msg *message, SensorType sensor_type);
 void *msg_dispatcher();
+
+Building *init_building(PowerSource prefered_power_source);
+void free_building(Building *_building);
+int add_room(Building *_building, bool natural_light);
 
 
 #endif
