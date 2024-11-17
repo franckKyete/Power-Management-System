@@ -1,86 +1,54 @@
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
+
 #include "server.h"
+#include "cli_socket.h"
 
 pthread_mutex_t building_lock;
 bool running = true;
-Building *building;
+Building building;
 
 int main(int argc, char **argv){
-    pthread_t msg_dispatcher_thread;
+    pthread_t msg_dispatcher_thread, cli_socket_thread;
 
-    building = init_building(SOLAR);
+    init_building(&building, SOLAR);
 
-    if(add_room(building, true) == -1){
+    if(add_room(&building, true) == -1){
         perror("Failed to add a room");
-        exit(0);
+        exit(EXIT_FAILURE);
+    }
+    if(add_room(&building, true) == -1){
+        perror("Failed to add a room");
+        exit(EXIT_FAILURE);
+    }
+    if(add_room(&building, true) == -1){
+        perror("Failed to add a room");
+        exit(EXIT_FAILURE);
     }
 
-    if(pthread_create(&msg_dispatcher_thread, NULL, msg_dispatcher, building) != 0){
+    if(pthread_create(&msg_dispatcher_thread, NULL, msg_dispatcher, &building) != 0){
         perror("Failed to create message dispatcher thread");
+        exit(EXIT_FAILURE);
     }
-    sleep(5);
+    if(pthread_create(&cli_socket_thread, NULL, cli_socket, &building) != 0){
+        perror("Failed to create message dispatcher thread");
+        exit(EXIT_FAILURE);
+    }
+
+    sleep(30);
     running = false;
+
     pthread_join(msg_dispatcher_thread, NULL);
+    pthread_join(cli_socket_thread, NULL);
+
     printf("Complete\n");
 
-    free_building(building);
-
     return 0;
 }
 
-Building *init_building(PowerSource prefered_power_source){
-    Building *_building;
-    _building = (Building *)malloc(sizeof(Building));
-    _building->size = 0;
-    _building->prefered_power_source = prefered_power_source;
-}
-void free_building(Building *_building){
 
-    for (size_t i = 0; i < _building->size; i++){
-        for (size_t s = 0; s < 4; s++){
-            free(_building->sensors[i*4 + s]);
-        }
-        free( _building->rooms[i]);
-    }
-}
-
-int add_room(Building *_building, bool natural_light){
-    
-    Room *_room;
-
-    if (_building->size >= MAX_ROOM){
-        printf("Cannot add any more rooms\n");
-        return -1;
-    }
-
-    _room = (Room *)malloc(sizeof(Room));
-
-    _room->ac_temp = 0;
-    _room->ac = false;
-    _room->light = false;
-    _room->ventilation = false;
-    _room->natural_light = natural_light;
-    _room->power_source = _building->prefered_power_source;
-
-    _room->id = _building->size;
-    _building->size++;
-
-    Sensor *sensor;
-    for (size_t i = 0; i < 4; i++){
-        sensor = (Sensor*)malloc(sizeof(Sensor));
-        sensor->type = i;
-        sensor->value = 0;
-        sensor->room_id = _room->id;
-        _room->sensors[i] = sensor;
-        _building->sensors[(_room->id*4) + i] = sensor;
-    }
-    
-    return 0;
-}
-
-void *msg_dispatcher(Building *_building){
+void *msg_dispatcher(Building *building){
     int msgids[4];
     sensor_msg message;
 
@@ -94,11 +62,10 @@ void *msg_dispatcher(Building *_building){
         }
     }
 
-    while (running)
-    {
-        for(int i=0; i<4; i++){
+    while (running){
+        for(int sensor_type=0; sensor_type<4; sensor_type++){
             // Receive the message
-            if (msgrcv(msgids[i], &message, sizeof(message.value), 0, IPC_NOWAIT) == -1) {// Remove the IPC_NOWAIT
+            if (msgrcv(msgids[sensor_type], &message, sizeof(message.value), 0, IPC_NOWAIT) == -1) {// Remove the IPC_NOWAIT
                 if(errno == ENOMSG){
                     //printf("No message received\n");
                 }else{
@@ -106,8 +73,8 @@ void *msg_dispatcher(Building *_building){
                     exit(1);
                 }   
             }else{
-                printf("Received : %f\n", message.value);
-                dispatch_msg(_building, &message, i);
+                // printf("Received : %f\n", message.value);
+                dispatch_msg(building, &message, sensor_type);
             }
         }
     }
@@ -116,8 +83,9 @@ void *msg_dispatcher(Building *_building){
 
 
 
-void dispatch_msg(Building *_building, sensor_msg *message, SensorType sensor_type){
-
-    Sensor *sensor = _building->sensors[((message->room_id-1) * 4) + sensor_type];
+void dispatch_msg(Building *building, sensor_msg *message, SensorType sensor_type){
+    
+    Room *room = &building->rooms[message->room_id-1];
+    Sensor *sensor = &room->sensors[sensor_type];
     sensor->value = message->value;
 }
