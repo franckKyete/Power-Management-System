@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <pthread.h>
 
 
 #define MAX_ROOM 20
@@ -57,7 +58,9 @@ typedef struct
     bool natural_light;
 
     Sensor sensors[4];
-    Device divices[MAX_DEVICES];
+    Device devices[MAX_DEVICES];
+    int devices_nb;
+    pthread_mutex_t lock;
 } Room;
 
 
@@ -67,6 +70,7 @@ typedef struct
     
     int size; // Number of rooms
     PowerSource prefered_power_source;
+    pthread_mutex_t building_lock;
 
     char null;
 } Building;

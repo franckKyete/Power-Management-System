@@ -10,7 +10,7 @@ bool running = true;
 Building building;
 
 int main(int argc, char **argv){
-    pthread_t msg_dispatcher_thread, cli_socket_thread;
+    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads;
 
     init_building(&building, SOLAR);
 
@@ -32,15 +32,17 @@ int main(int argc, char **argv){
         exit(EXIT_FAILURE);
     }
     if(pthread_create(&cli_socket_thread, NULL, cli_socket, &building) != 0){
-        perror("Failed to create message dispatcher thread");
+        perror("Failed to create message cli socket thread");
+        exit(EXIT_FAILURE);
+    }
+    if(pthread_create(&power_meters_threads, NULL, power_meters, &building) != 0){
+        perror("Failed to create message power meters threads");
         exit(EXIT_FAILURE);
     }
 
-    sleep(30);
-    running = false;
-
     pthread_join(msg_dispatcher_thread, NULL);
     pthread_join(cli_socket_thread, NULL);
+    pthread_join(power_meters_threads, NULL);
 
     printf("Complete\n");
 
@@ -62,7 +64,7 @@ void *msg_dispatcher(Building *building){
         }
     }
 
-    while (running){
+    while (1){
         for(int sensor_type=0; sensor_type<4; sensor_type++){
             // Receive the message
             if (msgrcv(msgids[sensor_type], &message, sizeof(message.value), 0, IPC_NOWAIT) == -1) {// Remove the IPC_NOWAIT
@@ -87,5 +89,8 @@ void dispatch_msg(Building *building, sensor_msg *message, SensorType sensor_typ
     
     Room *room = &building->rooms[message->room_id-1];
     Sensor *sensor = &room->sensors[sensor_type];
+
+    pthread_mutex_lock(&room->lock);
     sensor->value = message->value;
+    pthread_mutex_unlock(&room->lock);
 }
