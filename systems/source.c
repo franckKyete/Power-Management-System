@@ -49,6 +49,17 @@ void *source(Building *building) {
             printf("La puissance totale (%f) est inférieure à la capacité de la batterie (%f). Utilisation de l'énergie solaire.\n", puissance_totale, puissance_batterie);
         }
 
+        // Vérifier si le réseau (GRID) est disponible
+        if (!grid_available) {
+            // Si le réseau est coupé, passer au générateur
+            building->prefered_power_source = GENERATOR;
+            printf("Le réseau est coupé. Passage à la source d'énergie du générateur.\n");
+        } else {
+            // Si le réseau est disponible à nouveau, passer au GRID
+            building->prefered_power_source = GRID;
+            printf("Le réseau est rétabli. Retour à la source d'énergie du réseau.\n");
+        }
+
         // Délai pour éviter une boucle trop rapide (ajustez la valeur selon les besoins)
         sleep(1);
     }
