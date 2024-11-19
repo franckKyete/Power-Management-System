@@ -49,12 +49,10 @@ void *cli_socket(void *_building){
     }
     while (1)
     {
-        // valread = read(new_socket, buffer, 1024 - 1);
-        // printf("%s\n", buffer);
         pthread_mutex_lock(&building->building_lock);
-        send(new_socket, building, sizeof(Building), 0);
+        send(new_socket, building, sizeof(Building), MSG_NOSIGNAL);
         pthread_mutex_unlock(&building->building_lock);
-        // printf("message sent\n");
+       
         sleep(1);
     }
     

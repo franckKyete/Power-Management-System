@@ -8,16 +8,19 @@
 #endif
 
 #include "../msg_queue.h"
+#include "../shared_mem.h"
 
 // Fonction pour simuler la détection de présence
-int genererPresence() {
-    return rand() % 2; // Génère un nombre aléatoire 0 ou 1
+int get_presence(shared_memory* shm_ptr, const int room_id) {
+    if(!shm_ptr->is_written)
+        return rand() % 2; // Génère un nombre aléatoire 0 ou 1
+    return shm_ptr->values[((room_id-1)*4) + 1];
 }
 
 int main(int argc, char **argv) {
-
-    int msgid;
+    int msgid, shmid;
     sensor_msg message;
+    shared_memory *shm_ptr;
 
     int presence;
     // int compteurTemps = 0;
@@ -37,11 +40,21 @@ int main(int argc, char **argv) {
         perror("msgget failed");
         exit(1);
     }
+    shmid = shmget(SHM_KEY, SHM_SIZE, 0666 | IPC_CREAT);
+    if(shmid == -1){
+        perror("shmget failed");
+        exit(1);
+    }
+    shm_ptr = (shared_memory*)shmat(shmid, NULL, 0);
+    if(shm_ptr == (shared_memory*)(-1)){
+        perror("shmat failed");
+        exit(1);
+    }
 
     printf("Sensor for room  %d started\n\n", (int)room_id);
 
     while (1) { // Boucle infinie pour générer des données en continu
-        presence = genererPresence();
+        presence = get_presence(shm_ptr, room_id);
         
         // if (presence) {
         //     printf("Présence détectée.\n");
