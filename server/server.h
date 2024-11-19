@@ -14,8 +14,9 @@
 
 
 void dispatch_msg(Building *building, sensor_msg *message, SensorType sensor_type);
-void *msg_dispatcher();
-void *power_meters(Building *building);
+void *msg_dispatcher(void *_building);
+void *power_meters(void *_building);
+void start_sensors(Building *building);
 
 
 #endif

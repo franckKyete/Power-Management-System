@@ -21,9 +21,10 @@ int main(int argc, char **argv) {
         exit(1);
     }
     const long room_id = atoi(argv[1]);
+    
 
     // Initialiser le générateur de nombres aléatoires
-    srand(time(NULL));
+    srand(room_id);
 
     msgid = msgget(CAPTEUR_CO2, 0666 | IPC_CREAT);
     if (msgid == -1) {
@@ -31,7 +32,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    printf("Sensor for room  %d started\n\n", (int)room_id);
+    // printf("Sensor for room  %d started\n\n", (int)room_id);
 
     // Boucle infinie pour simuler la mesure toutes les 30 secondes
     while (1) {
@@ -41,7 +42,7 @@ int main(int argc, char **argv) {
 
         // Générer et afficher une nouvelle valeur de CO2
         CO2_level = genererValeurCO2();
-        printf("Temps: %d secondes, Valeur de CO2: %f ppm\n", compteurTemps, CO2_level);
+        // printf("Temps: %d secondes, Valeur de CO2: %f ppm\n", compteurTemps, CO2_level);
 
         // Préparation du message
         message.room_id = room_id; // type de message, nécessaire pour l'envoi 
@@ -51,9 +52,9 @@ int main(int argc, char **argv) {
         if (msgsnd(msgid, &message, sizeof(message.value), 0) == -1) {
             perror("msgsnd failed");
         }else{
-            printf("Message sent: %f\n", message.value);
+            // printf("Message sent: %f\n", message.value);
         }
-        printf("\n");
+        // printf("\n");
     }
 }
 

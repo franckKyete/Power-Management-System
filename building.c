@@ -35,10 +35,7 @@ int add_room(Building *building, bool natural_light){
     room->natural_light = natural_light;
     room->power_source = building->prefered_power_source;
 
-    if(pthread_mutex_init(&room->lock, NULL) != 0){
-        perror("Mutex initialization failed");
-        exit(EXIT_FAILURE);
-    }
+    room->building_lock = &building->building_lock;
 
     Sensor *sensor;
     for (size_t i = 0; i < 4; i++){
@@ -47,6 +44,28 @@ int add_room(Building *building, bool natural_light){
         sensor->value = 0;
         sensor->room_id = room->id;
     }
+    
+    return 0;
+}
+
+
+int add_device(Building *building, char* name, int room_id, float voltage, float current){
+    
+    Room *room;
+    room = &building->rooms[room_id];
+
+    if (room->devices_nb >= MAX_DEVICES){
+        printf("Cannot add any more devices\n");
+        return -1;
+    }
+    pthread_mutex_lock(&building->building_lock);
+    room->devices[room->devices_nb].current = current;
+    room->devices[room->devices_nb].voltage = voltage;
+
+    // sprintf(&room->devices[room->devices_nb], name);
+
+    room->devices_nb++;
+    pthread_mutex_unlock(&building->building_lock);
     
     return 0;
 }

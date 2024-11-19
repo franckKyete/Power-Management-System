@@ -8,17 +8,16 @@
 #include <asm-generic/socket.h>
 
 
-void *cli_socket(Building *building){
+
+void *cli_socket(void *_building){
+
+    Building *building = (Building *)_building;
 
     int server_fd, new_socket;
-    ssize_t valread;
     struct sockaddr_in address;
     
     int opt = 1;
     socklen_t addrlen = sizeof(address);
-
-    char buffer[1024] = { 0 };
-    char* hello = "Hello from the server";
 
     if((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
         perror("Socket failed");
@@ -52,9 +51,10 @@ void *cli_socket(Building *building){
     {
         // valread = read(new_socket, buffer, 1024 - 1);
         // printf("%s\n", buffer);
-
+        pthread_mutex_lock(&building->building_lock);
         send(new_socket, building, sizeof(Building), 0);
-        printf("message sent\n");
+        pthread_mutex_unlock(&building->building_lock);
+        // printf("message sent\n");
         sleep(1);
     }
     

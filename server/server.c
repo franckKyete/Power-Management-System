@@ -1,15 +1,18 @@
 #include <pthread.h>
 #include <errno.h>
 #include <unistd.h>
+#include <sys/prctl.h>
+#include <signal.h>
 
 #include "server.h"
 #include "cli_socket.h"
 
 pthread_mutex_t building_lock;
 bool running = true;
-Building building;
 
 int main(int argc, char **argv){
+    
+    Building building;
     pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads;
 
     init_building(&building, SOLAR);
@@ -26,6 +29,18 @@ int main(int argc, char **argv){
         perror("Failed to add a room");
         exit(EXIT_FAILURE);
     }
+    if(add_room(&building, true) == -1){
+        perror("Failed to add a room");
+        exit(EXIT_FAILURE);
+    }
+    // if(add_room(&building, true) == -1){
+    //     perror("Failed to add a room");
+    //     exit(EXIT_FAILURE);
+    // }
+
+    add_device(&building, NULL, 1, 120.0, 10.0);
+
+    start_sensors(&building);
 
     if(pthread_create(&msg_dispatcher_thread, NULL, msg_dispatcher, &building) != 0){
         perror("Failed to create message dispatcher thread");
@@ -49,8 +64,51 @@ int main(int argc, char **argv){
     return 0;
 }
 
+void start_sensors(Building *building){
 
-void *msg_dispatcher(Building *building){
+    char argv[5];
+    for(int sensor_type = 0; sensor_type < 3; sensor_type++){
+        for (size_t room_id = 1; room_id <= building->size; room_id++){
+            pid_t pid = fork();
+            if(pid == 0){
+                prctl(PR_SET_PDEATHSIG, SIGTERM);
+                if(getpid() == 1){
+                    exit(EXIT_FAILURE);
+                }
+                snprintf(argv, sizeof(argv), "%d", (int)room_id);
+                // sprintf(argv, "%d", (int)room_id);
+                // itoa(room_id, argv, 10);
+                switch (sensor_type)
+                {
+                case CO2_SENSOR:
+                    execlp("./build/co2_sensor", "co2_sensor", argv, NULL);
+                    break;
+                case PRESENCE_SENSOR:
+                    execlp("./build/presence_sensor", "presence_sensor", argv, NULL);
+                    break;
+                case TEMPERATURE_SENSOR:
+                    execlp("./build/temperature_sensor", "temperature_sensor", argv, NULL);
+                    break;
+                default:
+                    break;
+                }
+                
+                perror("execlp failed");
+                exit(EXIT_FAILURE);
+            }else if (pid > 0)
+            {
+                continue;
+            }else{
+                perror("fork failed");
+                exit(EXIT_FAILURE);
+            }
+        }
+    }
+    
+}
+
+void *msg_dispatcher(void *_building){
+    Building *building = (Building*)_building;
     int msgids[4];
     sensor_msg message;
 
@@ -87,10 +145,14 @@ void *msg_dispatcher(Building *building){
 
 void dispatch_msg(Building *building, sensor_msg *message, SensorType sensor_type){
     
+    if(message->room_id > building->size){
+        return;
+    }
+
     Room *room = &building->rooms[message->room_id-1];
     Sensor *sensor = &room->sensors[sensor_type];
 
-    pthread_mutex_lock(&room->lock);
+    pthread_mutex_lock(&building->building_lock);
     sensor->value = message->value;
-    pthread_mutex_unlock(&room->lock);
+    pthread_mutex_unlock(&building->building_lock);
 }

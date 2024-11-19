@@ -35,12 +35,12 @@ typedef struct
 
 // Structure pour représenter un appareil
 typedef struct {
-    long msg_type;         // Type de message (pour la file de messages)
+    // long msg_type;         // Type de message (pour la file de messages)
     char name[50];         // Nom de l'appareil
     float voltage;         // Tension en Volts
     float current;         // Intensité en Ampères
-    float power;           // Puissance en Watts
-    float energy;          // Énergie en Wh
+    // float power;           // Puissance en Watts
+    // float energy;          // Énergie en Wh
     int time;              // Durée d'utilisation en secondes
 } Device;
 
@@ -60,7 +60,7 @@ typedef struct
     Sensor sensors[4];
     Device devices[MAX_DEVICES];
     int devices_nb;
-    pthread_mutex_t lock;
+    pthread_mutex_t *building_lock;
 } Room;
 
 
@@ -78,6 +78,6 @@ typedef struct
 
 void init_building(Building *building, PowerSource prefered_power_source);
 int add_room(Building *_building, bool natural_light);
-
+int add_device(Building *building, char* name, int room_id, float voltage, float current);
 
 #endif

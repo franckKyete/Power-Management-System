@@ -5,6 +5,6 @@
 
 #define PORT 8080
 
-void *cli_socket(Building *building);
+void *cli_socket(void *_building);
 
 #endif

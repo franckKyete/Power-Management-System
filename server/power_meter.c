@@ -18,10 +18,14 @@ float calculate_energy(float power, int time) {
     return power * time / 3600;  // E = P * t (converti en Wh)
 }
 
-void* room_power_meter(Room *room){
+void* room_power_meter(void *_room){
+
+    Room *room = (Room *)_room;
+
+    printf("The number of devices for room %d is %d\n", room->id, room->devices_nb);
+
     Device *device;
     int total_consomation;
-
     while (1) {
         
         total_consomation = 0;
@@ -29,21 +33,22 @@ void* room_power_meter(Room *room){
             device = &room->devices[d];
             total_consomation = calculate_power(device->voltage, device->current);
         }
-        pthread_mutex_lock(&room->lock);
+        pthread_mutex_lock(room->building_lock);
         room->sensors[POWER_METER].value = total_consomation;
-        pthread_mutex_unlock(&room->lock);
-        
+        pthread_mutex_unlock(room->building_lock);
     }
     pthread_exit(NULL);
 }
 
-void* power_meters(Building *building) {
+void* power_meters(void *_building) {
 
+    Building *building = (Building *)_building;
     pthread_t room_power_meter_thread[MAX_ROOM];
     Room *room;
 
     for (size_t i = 0; i < building->size; i++){
         room = &building->rooms[i];
+
         if(pthread_create(&room_power_meter_thread[i], NULL, room_power_meter, room) != 0){
             perror("Failed to create power meter thread");
             exit(EXIT_FAILURE);

@@ -7,8 +7,9 @@
 #include "cli.h"
 
 
-void *cli_socket(Building *building){
-    int status, valread, client_fd;
+void *cli_socket(void *_building){
+    Building *building = (Building*)_building;
+    int status, client_fd;
     struct sockaddr_in serv_addr;
 
     if ((client_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
@@ -29,7 +30,7 @@ void *cli_socket(Building *building){
     }
     while (1)
     {
-        valread = read(client_fd, building, sizeof(Building));        
+        read(client_fd, building, sizeof(Building));        
     }
     
     

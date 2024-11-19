@@ -25,7 +25,7 @@ int main(int argc, char **argv) {
     const long room_id = atoi(argv[1]);
 
     // Initialiser le générateur de nombres aléatoires
-    srand(time(NULL));
+    srand(room_id);
 
     msgid = msgget(CAPTEUR_TEMPERATURE, 0666 | IPC_CREAT);
     if (msgid == -1) {
@@ -33,13 +33,13 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    printf("Sensor for room  %d started\n\n", (int)room_id);
+    // printf("Sensor for room  %d started\n\n", (int)room_id);
 
     while (1) { // Boucle infinie pour générer des données en continu
         temperature = valeur_temperature();
         
         
-        printf("Temperature détectée : %d \n", temperature);
+        // printf("Temperature détectée : %d \n", temperature);
 
         message.room_id = room_id;
         message.value = temperature;
@@ -47,9 +47,8 @@ int main(int argc, char **argv) {
         if (msgsnd(msgid, &message, sizeof(message.value), 0) == -1) {
             perror("msgsnd failed");
         }else{
-            printf("Message sent: %f\n", message.value);
+            // printf("Message sent: %f\n", message.value);
         }
-        printf("\n");
 
         // Temporisation d'une seconde avant la prochaine génération
         #ifdef _WIN32
