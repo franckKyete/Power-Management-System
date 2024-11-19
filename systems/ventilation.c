@@ -28,8 +28,24 @@
 void *ventilation(Building *building){
     
     while (1){
-        // Lire la mesure des capteurs necessaire
-        // Controler le systeme (chauffage, lumière, ventilation ou source d'energie)
+        int presence= builing->rooms[2].sensors[CAPTEUR_PRESENCE].value;
+        float temperature = builing->rooms[2].sensors[CAPTEUR_PRESENCE].value;
+        if (presence) {
+
+            builing->rooms[2].light = true;
+                } else {
+            builing->rooms[2].light = false;
+                }
+        if ( temperature >25.0 )
+            builing->rooms[2].ventilation  = true;
+                } else {
+            builing->rooms[2].ventilation  = false;
+    }
+               sleep (1);
+}
+}           
+
+
     }
     pthread_exit(NULL);
 }
