@@ -12,8 +12,10 @@
 
 // Fonction pour simuler la détection de présence
 int get_presence(shared_memory* shm_ptr, const int room_id) {
-    if(!shm_ptr->is_written)
-        return rand() % 2; // Génère un nombre aléatoire 0 ou 1
+    if(!shm_ptr->is_written){
+        return rand() % 2;
+    }
+    // Génère un nombre aléatoire 0 ou 1
     return shm_ptr->values[((room_id-1)*4) + 1];
 }
 
@@ -24,7 +26,7 @@ int main(int argc, char **argv) {
 
     int presence;
     // int compteurTemps = 0;
-    const int interval = 1;
+    const int interval = 100000;
 
     if(argc < 2){
         printf("The room number must be set\n");
@@ -75,7 +77,7 @@ int main(int argc, char **argv) {
         #ifdef _WIN32
             Sleep(interval*1000); // Sous Windows, Sleep est en millisecondes
         #else
-            sleep(interval); // Sous Linux/Unix, sleep est en secondes
+            usleep(interval); // Sous Linux/Unix, sleep est en secondes
         #endif
     }
     return 0;

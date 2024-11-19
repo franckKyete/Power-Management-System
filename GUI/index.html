@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .blueprint{
+            display: grid;
+            width: fit-content;
+            height: fit-content;
+
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 1fr 1fr 1fr 1fr;
+        }
+        .blueprint .room{
+            width: 100px;
+            height: 100px;
+            border: solid;
+        }
+    </style>
+</head>
+<body>
+    <section class="blueprint">
+        <div class="room" room-id="0"></div>
+        <div class="room" room-id="1"></div>
+        <div class="room" room-id="2"></div>
+        <div class="room" room-id="3"></div>
+        <div class="room" room-id="4"></div>
+        <div class="room" room-id="5"></div>
+        <div class="room" room-id="6"></div>
+        <div class="room" room-id="7"></div>
+        <div class="room" room-id="8"></div>
+        <div class="room" room-id="9"></div>
+        <div class="room" room-id="10"></div>
+        <div class="room" room-id="11"></div>
+        <div class="room" room-id="12"></div>
+        <div class="room" room-id="13"></div>
+        <div class="room" room-id="14"></div>
+        <div class="room" room-id="15"></div>
+    </section>
+    <script>
+        document.querySelectorAll(".room").forEach(item => {
+            item.addEventListener('mouseenter', event => {
+                let room_id = item.getAttribute('room-id')
+                fetch('http://localhost:8082',{
+                    headers : {
+                        'Content-Type' : 'text/plain'
+                    },
+                    method : 'POST',
+                    body : `${room_id};1;1.0`
+                })
+            })
+            item.addEventListener('mouseleave', event => {
+                let room_id = item.getAttribute('room-id')
+                fetch('http://localhost:8082',{
+                    headers : {
+                        'Content-Type' : 'text/plain'
+                    },
+                    method : 'POST',
+                    body : `${room_id};1;0.0`
+                })
+            })
+        })
+        
+    </script>
+</body>
+</html>

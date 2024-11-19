@@ -8,9 +8,9 @@
 #define CHAUFFAGE_MAX 31
 
 float get_temperature(shared_memory* shm_ptr, const int room_id) {
-    if(!shm_ptr->is_written)
+    // if(!shm_ptr->is_written)
         return (rand() % (CHAUFFAGE_MAX - CHAUFFAGE_MIN)) + CHAUFFAGE_MIN;
-    return shm_ptr->values[((room_id-1)*4) + 2];
+    // return shm_ptr->values[((room_id-1)*4) + 2];
 }
 
 int main(int argc, char **argv) {
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     shared_memory *shm_ptr;
 
     int temperature;
-    const int interval = 1;
+    const int interval = 100000;
 
     if(argc < 2){
         printf("The room number must be set\n");
@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
         #ifdef _WIN32
             Sleep(interval*1000); // Sous Windows, Sleep est en millisecondes
         #else
-            sleep(interval); // Sous Linux/Unix, sleep est en secondes
+            usleep(interval); // Sous Linux/Unix, sleep est en secondes
         #endif
     }
     return 0;

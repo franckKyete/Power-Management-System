@@ -6,9 +6,9 @@
 
 // Fonction qui génère une valeur simulée de CO2 entre 400 et 5000 ppm
 int get_CO2_level(shared_memory* shm_ptr, const int room_id) {
-    if(!shm_ptr->is_written)
+    // if(!shm_ptr->is_written)
         return rand() % 4601 + 400; // génère une valeur entre 400 et 5000
-    return shm_ptr->values[((room_id-1)*4) + 0];
+    // return shm_ptr->values[((room_id-1)*4) + 0];
 }
 
 int main(int argc, char **argv) {
@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 
     float CO2_level = 400.5;// niveau de CO2 en partie par million  (exemple)
     int compteurTemps = 0;
-    const int interval = 1;
+    const int interval = 100000;
 
     if(argc < 2){
         printf("The room number must be set\n");
@@ -51,7 +51,7 @@ int main(int argc, char **argv) {
     // Boucle infinie pour simuler la mesure toutes les secondes
     while (1) {
         // Attendre 30 secondes
-        sleep(interval);
+        usleep(interval);
         compteurTemps += interval;
 
         // Générer et afficher une nouvelle valeur de CO2

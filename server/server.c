@@ -17,26 +17,14 @@ int main(int argc, char **argv){
 
     init_building(&building, SOLAR);
 
-    if(add_room(&building, true) == -1){
-        perror("Failed to add a room");
-        exit(EXIT_FAILURE);
+    for (size_t i = 0; i < 16; i++)
+    {
+        if(add_room(&building, true) == -1){
+            perror("Failed to add a room");
+            exit(EXIT_FAILURE);
+        }
     }
-    if(add_room(&building, true) == -1){
-        perror("Failed to add a room");
-        exit(EXIT_FAILURE);
-    }
-    if(add_room(&building, true) == -1){
-        perror("Failed to add a room");
-        exit(EXIT_FAILURE);
-    }
-    if(add_room(&building, true) == -1){
-        perror("Failed to add a room");
-        exit(EXIT_FAILURE);
-    }
-    // if(add_room(&building, true) == -1){
-    //     perror("Failed to add a room");
-    //     exit(EXIT_FAILURE);
-    // }
+    
 
     add_device(&building, NULL, 1, 120.0, 10.0);
 

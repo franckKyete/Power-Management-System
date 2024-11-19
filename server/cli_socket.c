@@ -53,7 +53,7 @@ void *cli_socket(void *_building){
         send(new_socket, building, sizeof(Building), MSG_NOSIGNAL);
         pthread_mutex_unlock(&building->building_lock);
        
-        sleep(1);
+        usleep(100000);
     }
     
     

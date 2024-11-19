@@ -43,7 +43,7 @@ int main(int argc, char **argv){
         system("clear");
         displaySummary(&building);
         // displayMenu();
-        sleep(1);
+        usleep(100000);
     }
     
     return 0;
