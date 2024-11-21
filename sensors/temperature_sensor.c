@@ -8,9 +8,10 @@
 #define CHAUFFAGE_MAX 31
 
 float get_temperature(shared_memory* shm_ptr, const int room_id) {
-    // if(!shm_ptr->is_written)
+    if(!shm_ptr->is_written){
         return (rand() % (CHAUFFAGE_MAX - CHAUFFAGE_MIN)) + CHAUFFAGE_MIN;
-    // return shm_ptr->values[((room_id-1)*4) + 2];
+    }
+    return shm_ptr->values[((room_id-1)*4) + 2];
 }
 
 int main(int argc, char **argv) {
