@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll(".room").forEach(item => {
 
         let room_id = item.getAttribute('room-id')
-        const CO2_level_generator = simulate_CO2(0.05, (Math.random() * (500 - 400)) + 400, 50 )
+        const CO2_level_generator = simulate_CO2(0.05, (Math.random() * (1100 - 900)) + 900, 50 )
         const temp_generator = simulate_temperature(22.0, 1.0);
 
 

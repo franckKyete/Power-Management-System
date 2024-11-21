@@ -1,9 +1,4 @@
-#include <pthread.h>
-#include <errno.h>
-#include <unistd.h>
-
-#include "building.h"
-
+#include "systems.h"
 
 // building : Represente le batiment
 //            Le batiment est composé de different pieces (rooms) 
@@ -25,35 +20,13 @@
 //                      }
 
 
-void *eclairage(Building *building){
+void *eclairage(void *_building){
+    Building *building = (Building*)_building;
     
     while (1){
         // Lire la mesure des capteurs necessaire
         // Controler le systeme (chauffage, lumière, ventilation ou source d'energie)
     }
     pthread_exit(NULL);
-}
-
-
-
-int main(int argc, char **argv){
-    pthread_t eclairage_thread;
-    Building building;
-
-    init_building(&building, SOLAR);
-    // Add rooms
-
-    if(pthread_create(&eclairage_thread, NULL, eclairage, &building) != 0){
-        perror("Failed to create system thread");
-        exit(EXIT_FAILURE);
-    }
-
-    sleep(30);
-
-    pthread_join(eclairage_thread, NULL);
-
-    printf("Complete\n");
-
-    return 0;
 }
 

@@ -6,6 +6,7 @@
 
 #include "server.h"
 #include "cli_socket.h"
+#include "../systems/systems.h"
 
 pthread_mutex_t building_lock;
 bool running = true;
@@ -13,7 +14,7 @@ bool running = true;
 int main(int argc, char **argv){
     
     Building building;
-    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads;
+    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads, ventilation_thread;
 
     init_building(&building, SOLAR);
 
@@ -42,10 +43,15 @@ int main(int argc, char **argv){
         perror("Failed to create message power meters threads");
         exit(EXIT_FAILURE);
     }
+    if(pthread_create(&ventilation_thread, NULL, ventilation, &building) != 0){
+        perror("Failed to create message ventilation thread");
+        exit(EXIT_FAILURE);
+    }
 
     pthread_join(msg_dispatcher_thread, NULL);
     pthread_join(cli_socket_thread, NULL);
     pthread_join(power_meters_threads, NULL);
+    pthread_join(ventilation_thread, NULL);
 
     printf("Complete\n");
 

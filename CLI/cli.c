@@ -7,7 +7,7 @@
 void displaySummary(Building* building){
 
 
-    printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "CO2 (\%)", "Presence", "Temp (C)", "Usage (W)", "Lumiere", "Ventilation");
+    printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "CO2 (ppm)", "Presence", "Temp (C)", "Usage (W)", "Lumiere", "Ventilation");
     printf("|-------------|-------------|-------------|-------------|-------------|-------------|-------------|\n");
 
     for (int i = 0; i < building->size; i++) {

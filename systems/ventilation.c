@@ -1,8 +1,4 @@
-#include <pthread.h>
-#include <errno.h>
-#include <unistd.h>
-
-#include "building.h"
+#include "systems.h"
 
 
 // building : Represente le batiment
@@ -24,47 +20,32 @@
 //                          building->rooms[2].light = false;
 //                      }
 
+#define MAX_CO2_LEVEL 1000
 
-void *ventilation(Building *building){
-    
+void *ventilation(void *_building){
+    Building *building = (Building*)_building;
+    bool ventilation;
+
     while (1){
-        int presence= builing->rooms[2].sensors[CAPTEUR_PRESENCE].value;
-        float temperature = builing->rooms[2].sensors[CAPTEUR_PRESENCE].value;
-        
-        if ( temperature >25.0 )
-            builing->rooms[2].ventilation  = true;
-                } else {
-            builing->rooms[2].ventilation  = false;
-    }
-               sleep (1);
-}
-}           
+        for (size_t room_id = 0; room_id < building->size; room_id++)
+        {
+            int presence= building->rooms[room_id].sensors[PRESENCE_SENSOR].value;
+            float co2_level = building->rooms[room_id].sensors[CO2_SENSOR].value;
+            
+            if ( co2_level > MAX_CO2_LEVEL && presence == 1.0){
+                ventilation = true;
+            } else {            
+                ventilation = false;    
+            }
 
-
+            if(ventilation != building->rooms[room_id].ventilation){
+                pthread_mutex_lock(&building->building_lock);
+                building->rooms[room_id].ventilation  = ventilation;
+                pthread_mutex_unlock(&building->building_lock);
+            }
+        }
     }
     pthread_exit(NULL);
-}
+}           
 
-
-
-int main(int argc, char **argv){
-    pthread_t ventilation_thread;
-    Building building;
-
-    init_building(&building, SOLAR);
-    // Add rooms
-
-    if(pthread_create(&ventilation_thread, NULL, ventilation, &building) != 0){
-        perror("Failed to create system thread");
-        exit(EXIT_FAILURE);
-    }
-
-    sleep(30);
-
-    pthread_join(ventilation_thread, NULL);
-
-    printf("Complete\n");
-
-    return 0;
-}
 
