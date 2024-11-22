@@ -14,7 +14,7 @@ bool running = true;
 int main(int argc, char **argv){
     
     Building building;
-    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads, ventilation_thread, eclairage_thread;
+    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads, ventilation_thread, eclairage_thread, power_source_thread;
 
     init_building(&building, SOLAR);
 
@@ -27,28 +27,35 @@ int main(int argc, char **argv){
     }
     
 
-    add_device(&building, NULL, 1, 120.0, 10.0);
+    add_device(&building, NULL, 1, 120.0, 1.0);
+    add_device(&building, NULL, 1, 12.0, 1.0);
+    add_device(&building, NULL, 2, 120.0, 10.0);
+    add_device(&building, NULL, 2, 120.0, 10.0);
 
     start_sensors(&building);
 
     if(pthread_create(&msg_dispatcher_thread, NULL, msg_dispatcher, &building) != 0){
-        perror("Failed to create message dispatcher thread");
+        perror("Failed to create dispatcher thread");
         exit(EXIT_FAILURE);
     }
     if(pthread_create(&cli_socket_thread, NULL, cli_socket, &building) != 0){
-        perror("Failed to create message cli socket thread");
+        perror("Failed to create cli socket thread");
         exit(EXIT_FAILURE);
     }
     if(pthread_create(&power_meters_threads, NULL, power_meters, &building) != 0){
-        perror("Failed to create message power meters threads");
+        perror("Failed to create power meters threads");
         exit(EXIT_FAILURE);
     }
     if(pthread_create(&ventilation_thread, NULL, ventilation, &building) != 0){
-        perror("Failed to create message ventilation thread");
+        perror("Failed to create ventilation thread");
         exit(EXIT_FAILURE);
     }
     if(pthread_create(&eclairage_thread, NULL, eclairage, &building) != 0){
-        perror("Failed to create message eclairage thread");
+        perror("Failed to create eclairage thread");
+        exit(EXIT_FAILURE);
+    }
+    if(pthread_create(&power_source_thread, NULL, power_source, &building) != 0){
+        perror("Failed to create power source thread");
         exit(EXIT_FAILURE);
     }
 
@@ -57,6 +64,7 @@ int main(int argc, char **argv){
     pthread_join(power_meters_threads, NULL);
     pthread_join(ventilation_thread, NULL);
     pthread_join(eclairage_thread, NULL);
+    pthread_join(power_source_thread, NULL);
 
     printf("Complete\n");
 

@@ -6,21 +6,38 @@
 
 void displaySummary(Building* building){
 
+    char power_source[11];
 
-    printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "CO2 (ppm)", "Presence", "Temp (C)", "Usage (W)", "Lumiere", "Ventilation");
-    printf("|-------------|-------------|-------------|-------------|-------------|-------------|-------------|\n");
+    printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "CO2 (ppm)", "Presence", "Temp (C)", "Usage (W)", "Lumiere", "Ventilation", "Power source");
+    printf("|-------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|\n");
 
     for (int i = 0; i < building->size; i++) {
 
+        switch (building->rooms[i].power_source)
+        {
+        case SOLAR:
+            sprintf(power_source, "SOLAR");
+            break;
+        case GENERATOR:
+            sprintf(power_source, "GENERATOR");
+            break;
+        case GRID:
+            sprintf(power_source, "GRID");
+            break;
+        
+        default:
+            break;
+        }
 
-        printf("| %-11d | %11.2f | %11.0f | %11.2f | %11.2f | %11d | %11d |\n", 
+        printf("| %-11d | %11.2f | %11.0f | %11.2f | %11.2f | %11d | %11d | %11s |\n", 
         building->rooms[i].id,
         building->rooms[i].sensors[CO2_SENSOR].value, 
         building->rooms[i].sensors[PRESENCE_SENSOR].value,
         building->rooms[i].sensors[TEMPERATURE_SENSOR].value, 
         building->rooms[i].sensors[POWER_METER].value, 
         building->rooms[i].light, 
-        building->rooms[i].ventilation);
+        building->rooms[i].ventilation,
+        power_source);
 
     }
 
