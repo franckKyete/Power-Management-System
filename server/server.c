@@ -14,7 +14,7 @@ bool running = true;
 int main(int argc, char **argv){
     
     Building building;
-    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads, ventilation_thread;
+    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads, ventilation_thread, eclairage_thread;
 
     init_building(&building, SOLAR);
 
@@ -47,11 +47,16 @@ int main(int argc, char **argv){
         perror("Failed to create message ventilation thread");
         exit(EXIT_FAILURE);
     }
+    if(pthread_create(&eclairage_thread, NULL, eclairage, &building) != 0){
+        perror("Failed to create message eclairage thread");
+        exit(EXIT_FAILURE);
+    }
 
     pthread_join(msg_dispatcher_thread, NULL);
     pthread_join(cli_socket_thread, NULL);
     pthread_join(power_meters_threads, NULL);
     pthread_join(ventilation_thread, NULL);
+    pthread_join(eclairage_thread, NULL);
 
     printf("Complete\n");
 

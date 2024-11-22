@@ -20,13 +20,33 @@
 //                      }
 
 
-void *eclairage(void *_building){
+void *eclairage(void *_building) {
     Building *building = (Building*)_building;
-    building;
-    while (1){
-        // Lire la mesure des capteurs necessaire
-        // Controler le systeme (chauffage, lumière, ventilation ou source d'energie)
+
+    bool light;
+
+    while (1) {
+        // Lire la mesure des capteurs nécessaire
+        for (int i = 0; i < building->size; i++) {
+
+            // Vérifier l'état du capteur de présence
+            if (building->rooms[i].sensors[PRESENCE_SENSOR].value == 1.0) {
+                // Quelqu'un est présent dans la pièce
+                light = true; // Allumer la lumière
+
+            } else {
+                // Personne n'est présent dans la pièce
+                light = false; // Éteindre la lumière
+            }
+            
+
+            if(light != building->rooms[i].light){
+                pthread_mutex_lock(&building->building_lock);
+                building->rooms[i].light = light;
+                pthread_mutex_unlock(&building->building_lock);
+            }
+        }
     }
+
     pthread_exit(NULL);
 }
-

@@ -32,7 +32,7 @@ void *ventilation(void *_building){
             int presence= building->rooms[room_id].sensors[PRESENCE_SENSOR].value;
             float co2_level = building->rooms[room_id].sensors[CO2_SENSOR].value;
             
-            if ( co2_level > MAX_CO2_LEVEL && presence == 1.0){
+            if ( co2_level > MAX_CO2_LEVEL && presence == 1){
                 ventilation = true;
             } else {            
                 ventilation = false;    

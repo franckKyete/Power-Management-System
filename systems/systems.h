@@ -8,7 +8,7 @@
 #include "../building.h"
 
 void *ventilation(void *_building);
-void *light(void *_building);
+void *eclairage(void *_building);
 void *ac(void *_building);
 void *power_source(void *_building);
 
