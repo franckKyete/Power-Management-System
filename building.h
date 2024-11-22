@@ -80,6 +80,6 @@ typedef struct
 
 void init_building(Building *building, PowerSource prefered_power_source);
 int add_room(Building *_building, bool natural_light);
-int add_device(Building *building, char* name, int room_id, float voltage, float current);
+int add_device(Building *building, char* name, int room_id, float power);
 
 #endif

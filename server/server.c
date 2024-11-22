@@ -27,10 +27,10 @@ int main(int argc, char **argv){
     }
     
 
-    add_device(&building, NULL, 1, 120.0, 1.0);
-    add_device(&building, NULL, 1, 12.0, 1.0);
-    add_device(&building, NULL, 2, 120.0, 10.0);
-    add_device(&building, NULL, 2, 120.0, 10.0);
+    add_device(&building, NULL, 1, 120.0);
+    add_device(&building, NULL, 1, 12.0);
+    add_device(&building, NULL, 2, 120.0);
+    add_device(&building, NULL, 2, 120.0);
 
     start_sensors(&building);
 

@@ -55,7 +55,7 @@ float calculate_power(float voltage, float current) {
     return voltage * current;  // P = U * I
 }
 
-int add_device(Building *building, char* name, int room_id, float voltage, float current){
+int add_device(Building *building, char* name, int room_id, float power){
     
     Room *room;
     room = &building->rooms[room_id];
@@ -65,9 +65,7 @@ int add_device(Building *building, char* name, int room_id, float voltage, float
         return -1;
     }
     pthread_mutex_lock(&building->building_lock);
-    room->devices[room->devices_nb].current = current;
-    room->devices[room->devices_nb].voltage = voltage;
-    room->devices[room->devices_nb].power = calculate_power(voltage, current);
+    room->devices[room->devices_nb].power = power;
 
     // sprintf(&room->devices[room->devices_nb], name);
 
