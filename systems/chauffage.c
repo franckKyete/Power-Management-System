@@ -23,10 +23,28 @@
 
 void *chauffage(void *_building){
     Building *building = (Building*)_building;
-    building;
+    bool ac;
+
     while (1){
-        // Lire la mesure des capteurs necessaire
-        // Controler le systeme (chauffage, lumière, ventilation ou source d'energie)
+        for (int i = 0; i < building->size; i++) {
+
+            // Vérifier l'état du capteur de présence
+            if (building->rooms[i].sensors[PRESENCE_SENSOR].value == 1.0 && building->rooms[i].sensors[TEMPERATURE_SENSOR].value > 25.0) {
+                // Quelqu'un est présent dans la pièce et la temperature depasse 25 degre
+                ac = true; // Allumer la lumière
+
+            } else {
+                // Personne n'est présent dans la pièce
+                ac = false; // Éteindre la lumière
+            }
+            
+
+            if(ac != building->rooms[i].ac){
+                pthread_mutex_lock(&building->building_lock);
+                building->rooms[i].ac = ac;
+                pthread_mutex_unlock(&building->building_lock);
+            }
+        }
     }
     pthread_exit(NULL);
 }

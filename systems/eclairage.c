@@ -26,7 +26,7 @@ void *eclairage(void *_building) {
     bool light;
 
     while (1) {
-        // Lire la mesure des capteurs nécessaire
+        
         for (int i = 0; i < building->size; i++) {
 
             // Vérifier l'état du capteur de présence

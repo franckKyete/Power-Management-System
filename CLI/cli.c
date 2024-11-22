@@ -7,9 +7,12 @@
 void displaySummary(Building* building){
 
     char power_source[11];
+    char ventilation[4];
+    char ac[4];
+    char light[4];
 
-    printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "CO2 (ppm)", "Presence", "Temp (C)", "Usage (W)", "Lumiere", "Ventilation", "Power source");
-    printf("|-------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|\n");
+    printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "CO2 (ppm)", "Presence", "Temp (C)", "Usage (W)", "A/C", "Lumiere", "Ventilation", "Power source");
+    printf("|-------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|\n");
 
     for (int i = 0; i < building->size; i++) {
 
@@ -24,19 +27,39 @@ void displaySummary(Building* building){
         case GRID:
             sprintf(power_source, "GRID");
             break;
-        
         default:
             break;
         }
 
-        printf("| %-11d | %11.2f | %11.0f | %11.2f | %11.2f | %11d | %11d | %11s |\n", 
+        if(building->rooms[i].light){
+            sprintf(light, "ON");
+        }else{
+            sprintf(light, "OFF");
+        }
+
+        if(building->rooms[i].ventilation){
+            sprintf(ventilation, "ON");
+        }else{
+            sprintf(ventilation, "OFF");
+        }
+
+        if(building->rooms[i].ac){
+            sprintf(ac, "ON");
+        }else{
+            sprintf(ac, "OFF");
+        }
+
+
+
+        printf("| %-11d | %11.2f | %11.0f | %11.2f | %11.2f | %11s | %11s | %11s | %11s |\n", 
         building->rooms[i].id,
         building->rooms[i].sensors[CO2_SENSOR].value, 
         building->rooms[i].sensors[PRESENCE_SENSOR].value,
         building->rooms[i].sensors[TEMPERATURE_SENSOR].value, 
         building->rooms[i].sensors[POWER_METER].value, 
-        building->rooms[i].light, 
-        building->rooms[i].ventilation,
+        ac,
+        light, 
+        ventilation,
         power_source);
 
     }
