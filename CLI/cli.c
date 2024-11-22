@@ -10,6 +10,7 @@ void displaySummary(Building* building){
     char ventilation[4];
     char ac[4];
     char light[4];
+    char presence[4];
 
     printf("| %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s | %-11s |\n", "Piece", "CO2 (ppm)", "Presence", "Temp (C)", "Usage (W)", "A/C", "Lumiere", "Ventilation", "Power source");
     printf("|-------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|-------------|\n");
@@ -48,13 +49,18 @@ void displaySummary(Building* building){
         }else{
             sprintf(ac, "OFF");
         }
+        if(building->rooms[i].sensors[PRESENCE_SENSOR].value){
+            sprintf(presence, "YES");
+        }else{
+            sprintf(presence, "NO");
+        }
 
 
 
-        printf("| %-11d | %11.2f | %11.0f | %11.2f | %11.2f | %11s | %11s | %11s | %11s |\n", 
+        printf("| %-11d | %11.2f | %11s | %11.2f | %11.2f | %11s | %11s | %11s | %11s |\n", 
         building->rooms[i].id,
         building->rooms[i].sensors[CO2_SENSOR].value, 
-        building->rooms[i].sensors[PRESENCE_SENSOR].value,
+        presence,
         building->rooms[i].sensors[TEMPERATURE_SENSOR].value, 
         building->rooms[i].sensors[POWER_METER].value, 
         ac,
