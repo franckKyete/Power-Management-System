@@ -18,7 +18,7 @@ int main(int argc, char **argv){
 
     init_building(&building, SOLAR);
 
-    for (size_t i = 0; i < 9; i++)
+    for (size_t i = 0; i < 6; i++)
     {
         if(add_room(&building, true) == -1){
             perror("Failed to add a room");

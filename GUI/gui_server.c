@@ -21,6 +21,7 @@ void write_shared_memory(char *buffer, shared_memory *shm_ptr){
     while (line != NULL)
     {
         if(sscanf(line, "%d;%d;%f", &room_id, &sensor_type, &value) == 3){
+            printf("value %f\n", value);
             shm_ptr->values[(room_id*4) + sensor_type] = value;
         }
         line = strtok(NULL, "\n");
@@ -40,7 +41,7 @@ void handle_client(int client_socket, shared_memory *shm_ptr){
     // printf("HTTP Request : \n%s\n", buffer);
 
     char *body = strstr(buffer, "\r\n\r\n");
-    printf("Data : %s\n", body);
+    // printf("Data : %s\n", body);
     if(body){
         body += 4;
         write_shared_memory(body, shm_ptr);

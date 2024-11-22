@@ -13,7 +13,7 @@ void displaySummary(Building* building){
     for (int i = 0; i < building->size; i++) {
 
 
-        printf("| %-11d | %-11f | %-11f | %-11f | %-11f | %-11d | %-11d |\n", 
+        printf("| %-11d | %11.2f | %11.0f | %11.2f | %11.2f | %11d | %11d |\n", 
         building->rooms[i].id,
         building->rooms[i].sensors[CO2_SENSOR].value, 
         building->rooms[i].sensors[PRESENCE_SENSOR].value,

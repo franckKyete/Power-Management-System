@@ -22,7 +22,7 @@
 
 void *eclairage(void *_building){
     Building *building = (Building*)_building;
-    
+    building;
     while (1){
         // Lire la mesure des capteurs necessaire
         // Controler le systeme (chauffage, lumière, ventilation ou source d'energie)

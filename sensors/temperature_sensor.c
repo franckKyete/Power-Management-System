@@ -9,7 +9,7 @@
 
 float get_temperature(shared_memory* shm_ptr, const int room_id) {
     if(!shm_ptr->is_written){
-        return (rand() % (CHAUFFAGE_MAX - CHAUFFAGE_MIN)) + CHAUFFAGE_MIN;
+        return (float)((rand() % (CHAUFFAGE_MAX - CHAUFFAGE_MIN)) + CHAUFFAGE_MIN);
     }
     return shm_ptr->values[((room_id-1)*4) + 2];
 }
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
     sensor_msg message;
     shared_memory *shm_ptr;
 
-    int temperature;
+    float temperature;
     const int interval = 100000;
 
     if(argc < 2){
@@ -48,7 +48,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    // printf("Sensor for room  %d started\n\n", (int)room_id);
+    printf("Temperature Sensor for room  %d started\n", (int)room_id);
 
     while (1) { // Boucle infinie pour générer des données en continu
         temperature = get_temperature(shm_ptr, room_id);

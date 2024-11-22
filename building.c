@@ -5,6 +5,8 @@ void init_building(Building *building, PowerSource prefered_power_source){
 
     building->size = 0;
     building->prefered_power_source = prefered_power_source;
+    building->generator_available = true;
+    building->grid_available = true;
     if(pthread_mutex_init(&building->building_lock, NULL) != 0){
         perror("Mutex initialization failed");
         exit(EXIT_FAILURE);
@@ -48,6 +50,10 @@ int add_room(Building *building, bool natural_light){
     return 0;
 }
 
+// Fonction pour calculer la puissance
+float calculate_power(float voltage, float current) {
+    return voltage * current;  // P = U * I
+}
 
 int add_device(Building *building, char* name, int room_id, float voltage, float current){
     
@@ -61,6 +67,7 @@ int add_device(Building *building, char* name, int room_id, float voltage, float
     pthread_mutex_lock(&building->building_lock);
     room->devices[room->devices_nb].current = current;
     room->devices[room->devices_nb].voltage = voltage;
+    room->devices[room->devices_nb].power = calculate_power(voltage, current);
 
     // sprintf(&room->devices[room->devices_nb], name);
 

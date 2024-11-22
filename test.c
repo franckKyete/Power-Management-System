@@ -19,7 +19,7 @@ void func(char *buf){
 
 int main(){
     
-    char buffer[] = "15.4;65;90\n3;9;8\n38;1;8\n";
+    char buffer[] = "15.44444444444;65;90\n3;9;8\n38;1;8\n";
     
     func(buffer);
 

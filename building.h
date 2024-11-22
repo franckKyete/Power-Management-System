@@ -39,7 +39,7 @@ typedef struct {
     char name[50];         // Nom de l'appareil
     float voltage;         // Tension en Volts
     float current;         // Intensité en Ampères
-    // float power;           // Puissance en Watts
+    float power;           // Puissance en Watts
     // float energy;          // Énergie en Wh
     int time;              // Durée d'utilisation en secondes
 } Device;
@@ -71,6 +71,8 @@ typedef struct
     int size; // Number of rooms
     PowerSource prefered_power_source;
     pthread_mutex_t building_lock;
+    bool grid_available;
+    bool generator_available;
 
     char null;
 } Building;

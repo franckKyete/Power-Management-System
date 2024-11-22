@@ -8,10 +8,7 @@
 #include "../building.h"
 
 
-// Fonction pour calculer la puissance
-float calculate_power(float voltage, float current) {
-    return voltage * current;  // P = U * I
-}
+
 
 // Fonction pour calculer l'énergie
 float calculate_energy(float power, int time) {
@@ -22,8 +19,6 @@ void* room_power_meter(void *_room){
 
     Room *room = (Room *)_room;
 
-    printf("The number of devices for room %d is %d\n", room->id, room->devices_nb);
-
     Device *device;
     int total_consomation;
     while (1) {
@@ -31,7 +26,7 @@ void* room_power_meter(void *_room){
         total_consomation = 0;
         for (size_t d = 0; d < room->devices_nb; d++){
             device = &room->devices[d];
-            total_consomation = calculate_power(device->voltage, device->current);
+            total_consomation = device->power;
         }
         pthread_mutex_lock(room->building_lock);
         room->sensors[POWER_METER].value = total_consomation;
@@ -59,3 +54,4 @@ void* power_meters(void *_building) {
     }
     pthread_exit(NULL);
 }
+ 

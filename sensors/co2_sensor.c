@@ -5,9 +5,9 @@
 #include "../msg_queue.h"
 
 // Fonction qui génère une valeur simulée de CO2 entre 400 et 5000 ppm
-int get_CO2_level(shared_memory* shm_ptr, const int room_id) {
+float get_CO2_level(shared_memory* shm_ptr, const int room_id) {
     if(!shm_ptr->is_written){
-        return rand() % 4601 + 400; // génère une valeur entre 400 et 5000
+        return (float)(rand() % 4601 + 400); // génère une valeur entre 400 et 5000
     }
     return shm_ptr->values[((room_id-1)*4) + 0];
 }
@@ -47,7 +47,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    printf("Sensor for room  %d started\n\n", (int)room_id);
+    printf("CO2 Sensor for room  %d started\n", (int)room_id);
 
     // Boucle infinie pour simuler la mesure toutes les secondes
     while (1) {

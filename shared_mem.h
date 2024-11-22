@@ -13,7 +13,7 @@
 
 typedef struct{
     int is_written;
-    int values[80];
+    float values[80];
 }shared_memory;
 
 #endif
