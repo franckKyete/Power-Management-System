@@ -4,7 +4,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-#include "cli_socket.h"
+#include "server_sockets.h"
 #include <asm-generic/socket.h>
 
 
@@ -31,7 +31,7 @@ void *cli_socket(void *_building){
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(PORT);
+    address.sin_port = htons(CLI_PORT);
 
     if (bind(server_fd, (struct sockaddr*)&address, sizeof(address)) < 0){
         perror("bind failed");

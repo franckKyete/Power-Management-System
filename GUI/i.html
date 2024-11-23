@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blueprint</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom, #d6d6d6, #f5f5f5);
+            font-family: Arial, sans-serif;
+            color: #333;
+        }
+        .blueprint {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 20px;
+            padding: 20px;
+            width: 90vw;
+            height: 90vh;
+            background: #fff;
+            border: solid 1px #ccc;
+            border-radius: 10px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        .room {
+            position: relative;
+            background: linear-gradient(to bottom, #e0e0e0, #ffffff);
+            border: solid 1px #bdbdbd;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            box-shadow: inset 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .room .icons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+        .room .icons img {
+            width: 30px;
+            height: 30px;
+        }
+        .room .toggle-container {
+            margin-top: 10px;
+            text-align: center;
+        }
+        .room .toggle {
+            margin: 5px;
+        }
+        .room.light-active {
+            box-shadow: inset 0 0 40px 10px rgba(255, 255, 150, 0.7);
+        }
+        .room .toggle-label {
+            font-size: 14px;
+            margin-bottom: 4px;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <section class="blueprint">
+        <!-- 8 rooms dynamically generated in script.js -->
+    </section>
+    <script>
+        // Icons for each state
+        const ICONS = {
+            presence: 'https://img.icons8.com/ios-filled/50/user.png',
+            light: 'https://img.icons8.com/ios-filled/50/light-on.png',
+            ac: 'https://img.icons8.com/ios-filled/50/air-conditioner.png',
+            fan: 'https://img.icons8.com/ios-filled/50/fan.png',
+            device: 'https://img.icons8.com/ios-filled/50/plug.png'
+        };
+
+        // Create a single toggle switch
+        function createToggle(id, label, onChangeCallback) {
+            const toggleContainer = document.createElement('div');
+            toggleContainer.classList.add('toggle-container');
+
+            const toggleLabel = document.createElement('label');
+            toggleLabel.classList.add('toggle-label');
+            toggleLabel.innerText = label;
+            toggleContainer.appendChild(toggleLabel);
+
+            const toggleInput = document.createElement('input');
+            toggleInput.type = 'checkbox';
+            toggleInput.classList.add('toggle');
+            toggleInput.addEventListener('change', onChangeCallback);
+            toggleContainer.appendChild(toggleInput);
+
+            return toggleContainer;
+        }
+
+        // Create a room
+        function createRoom(id) {
+            const room = document.createElement('div');
+            room.classList.add('room');
+            room.setAttribute('room-id', id);
+
+            const iconsContainer = document.createElement('div');
+            iconsContainer.classList.add('icons');
+            room.appendChild(iconsContainer);
+
+            // Toggle for presence
+            const presenceToggle = createToggle('presence', 'Présence', (e) => {
+                if (e.target.checked) {
+                    const icon = document.createElement('img');
+                    icon.src = ICONS.presence;
+                    icon.alt = 'Person';
+                    if (!iconsContainer.querySelector(`[src="${ICONS.presence}"]`)) {
+                        iconsContainer.appendChild(icon);
+                    }
+                } else {
+                    const icon = iconsContainer.querySelector(`[src="${ICONS.presence}"]`);
+                    icon && icon.remove();
+                }
+            });
+            room.appendChild(presenceToggle);
+
+            // Toggle for light
+            const lightToggle = createToggle('light', 'Lumière', (e) => {
+                room.classList.toggle('light-active', e.target.checked);
+            });
+            room.appendChild(lightToggle);
+
+            // Toggle for air conditioner
+            const acToggle = createToggle('ac', 'Clim', (e) => {
+                if (e.target.checked) {
+                    const icon = document.createElement('img');
+                    icon.src = ICONS.ac;
+                    icon.alt = 'AC';
+                    iconsContainer.appendChild(icon);
+                } else {
+                    const icon = iconsContainer.querySelector(`[src="${ICONS.ac}"]`);
+                    icon && icon.remove();
+                }
+            });
+            room.appendChild(acToggle);
+
+            // Toggle for fan
+            const fanToggle = createToggle('fan', 'Ventilateur', (e) => {
+                if (e.target.checked) {
+                    const icon = document.createElement('img');
+                    icon.src = ICONS.fan;
+                    icon.alt = 'Fan';
+                    iconsContainer.appendChild(icon);
+                } else {
+                    const icon = iconsContainer.querySelector(`[src="${ICONS.fan}"]`);
+                    icon && icon.remove();
+                }
+            });
+            room.appendChild(fanToggle);
+
+            // Toggle for generic device
+            const deviceToggle = createToggle('device', 'Appareil', (e) => {
+                if (e.target.checked) {
+                    const icon = document.createElement('img');
+                    icon.src = ICONS.device;
+                    icon.alt = 'Device';
+                    iconsContainer.appendChild(icon);
+                } else {
+                    const icon = iconsContainer.querySelector(`[src="${ICONS.device}"]`);
+                    icon && icon.remove();
+                }
+            });
+            room.appendChild(deviceToggle);
+
+            return room;
+        }
+
+        // Populate blueprint
+        const blueprint = document.querySelector('.blueprint');
+        for (let i = 0; i < 8; i++) {
+            blueprint.appendChild(createRoom(i));
+        }
+    </script>
+</body>
+</html>

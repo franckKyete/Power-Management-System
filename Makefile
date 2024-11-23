@@ -17,7 +17,7 @@ SERVER_DIR = server
 SYSTEMS_DIR = systems
 
 # Source files
-SERVER_SRC = $(SERVER_DIR)/server.c $(SERVER_DIR)/power_meter.c $(SERVER_DIR)/cli_socket.c $(SRC_DIR)/building.c $(SYSTEMS_DIR)/chauffage.c $(SYSTEMS_DIR)/eclairage.c $(SYSTEMS_DIR)/energy_source.c $(SYSTEMS_DIR)/ventilation.c
+SERVER_SRC = $(SERVER_DIR)/server.c $(SERVER_DIR)/power_meter.c $(SERVER_DIR)/cli_socket.c $(SERVER_DIR)/gui_socket.c $(SRC_DIR)/building.c $(SYSTEMS_DIR)/chauffage.c $(SYSTEMS_DIR)/eclairage.c $(SYSTEMS_DIR)/energy_source.c $(SYSTEMS_DIR)/ventilation.c
 
 CO2_SENSOR_SRC = $(SENSORS_DIR)/co2_sensor.c
 TEMP_SENSOR_SRC = $(SENSORS_DIR)/temperature_sensor.c

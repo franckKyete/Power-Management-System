@@ -5,7 +5,7 @@
 #include <signal.h>
 
 #include "server.h"
-#include "cli_socket.h"
+#include "server_sockets.h"
 #include "../systems/systems.h"
 
 pthread_mutex_t building_lock;
@@ -14,7 +14,7 @@ bool running = true;
 int main(int argc, char **argv){
     
     Building building;
-    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads, ventilation_thread, eclairage_thread, power_source_thread;
+    pthread_t msg_dispatcher_thread, cli_socket_thread, power_meters_threads, ventilation_thread, eclairage_thread, power_source_thread, gui_socket_thread;
 
     init_building(&building, SOLAR);
 
@@ -39,7 +39,11 @@ int main(int argc, char **argv){
         exit(EXIT_FAILURE);
     }
     if(pthread_create(&cli_socket_thread, NULL, cli_socket, &building) != 0){
-        perror("Failed to create cli socket thread");
+        perror("Failed to create CLI socket thread");
+        exit(EXIT_FAILURE);
+    }
+    if(pthread_create(&gui_socket_thread, NULL, gui_socket, &building) != 0){
+        perror("Failed to create GUI socket thread");
         exit(EXIT_FAILURE);
     }
     if(pthread_create(&power_meters_threads, NULL, power_meters, &building) != 0){
@@ -61,6 +65,7 @@ int main(int argc, char **argv){
 
     pthread_join(msg_dispatcher_thread, NULL);
     pthread_join(cli_socket_thread, NULL);
+    pthread_join(gui_socket_thread, NULL);
     pthread_join(power_meters_threads, NULL);
     pthread_join(ventilation_thread, NULL);
     pthread_join(eclairage_thread, NULL);
