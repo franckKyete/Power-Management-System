@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             element : item,
             room_id : room_id,
             CO2_level_generator : simulate_CO2(0.05, (Math.random() * (1100 - 900)) + 900, 50 ),
-            temp_generator : simulate_temperature(22.0, 1.0)
+            temp_generator : simulate_temperature(24.0, 1.0)
         }
 
         item.addEventListener('mouseenter', event => {

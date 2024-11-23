@@ -30,6 +30,11 @@ int add_room(Building *building, bool natural_light){
     building->size++;
 
     room->devices_nb = 0;
+
+    add_device(building, "Ventilation", room->id, 0);
+    add_device(building, "A/C", room->id, 0);
+    add_device(building, "Light", room->id, 0);
+
     room->ac_temp = 0;
     room->ac = false;
     room->light = false;

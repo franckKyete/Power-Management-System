@@ -41,6 +41,11 @@ void *ventilation(void *_building){
             if(ventilation != building->rooms[room_id].ventilation){
                 pthread_mutex_lock(&building->building_lock);
                 building->rooms[room_id].ventilation  = ventilation;
+                if(ventilation){
+                    building->rooms[room_id].devices[VENTILATION_DEVICE].power = 230.0;
+                }else{
+                    building->rooms[room_id].devices[VENTILATION_DEVICE].power = 0;
+                }
                 pthread_mutex_unlock(&building->building_lock);
             }
         }

@@ -37,11 +37,15 @@ void *chauffage(void *_building){
                 // Personne n'est présent dans la pièce
                 ac = false; // Éteindre la lumière
             }
-            
 
             if(ac != building->rooms[i].ac){
                 pthread_mutex_lock(&building->building_lock);
                 building->rooms[i].ac = ac;
+                if(ac){
+                    building->rooms[i].devices[AC_DEVICE].power = 800.0;
+                }else{
+                    building->rooms[i].devices[AC_DEVICE].power = 0;
+                }
                 pthread_mutex_unlock(&building->building_lock);
             }
         }

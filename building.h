@@ -14,6 +14,11 @@
 #define MAX_ROOM 20
 #define MAX_DEVICES 20
 
+#define VENTILATION_DEVICE 0
+#define AC_DEVICE 1
+#define LIGHTING_DEVICE 2
+
+
 typedef enum {
     SOLAR, GENERATOR, GRID
 } PowerSource;

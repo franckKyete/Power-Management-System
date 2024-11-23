@@ -43,6 +43,11 @@ void *eclairage(void *_building) {
             if(light != building->rooms[i].light){
                 pthread_mutex_lock(&building->building_lock);
                 building->rooms[i].light = light;
+                if(light){
+                    building->rooms[i].devices[LIGHTING_DEVICE].power = 130.0;
+                }else{
+                    building->rooms[i].devices[LIGHTING_DEVICE].power = 0;
+                }
                 pthread_mutex_unlock(&building->building_lock);
             }
         }

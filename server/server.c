@@ -25,12 +25,6 @@ int main(int argc, char **argv){
             exit(EXIT_FAILURE);
         }
     }
-    
-
-    add_device(&building, NULL, 1, 120.0);
-    add_device(&building, NULL, 1, 12.0);
-    add_device(&building, NULL, 2, 120.0);
-    add_device(&building, NULL, 2, 120.0);
 
     start_sensors(&building);
 
