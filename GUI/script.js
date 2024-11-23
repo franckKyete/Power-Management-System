@@ -21,28 +21,20 @@ function* simulate_temperature(initial_temp, fluctuation_range){
 
 const intervals = []
 
+let rooms = []
 
 document.addEventListener('DOMContentLoaded', () => {
     
     document.querySelectorAll(".room").forEach(item => {
 
         let room_id = item.getAttribute('room-id')
-        const CO2_level_generator = simulate_CO2(0.05, (Math.random() * (1100 - 900)) + 900, 50 )
-        const temp_generator = simulate_temperature(22.0, 1.0);
 
-
-        let interval = setInterval(()=>{
-            let co2_level = CO2_level_generator.next().value
-            let temp = temp_generator.next().value
-            fetch('http://localhost:8082',{
-                headers : {
-                    'Content-Type' : 'text/plain'
-                },
-                method : 'POST',
-                body : `${room_id};0;${co2_level}\n${room_id};2;${temp}`
-            })
-        }, 1000)
-        intervals.push(interval)
+        rooms[room_id] = {
+            element : item,
+            room_id : room_id,
+            CO2_level_generator : simulate_CO2(0.05, (Math.random() * (1100 - 900)) + 900, 50 ),
+            temp_generator : simulate_temperature(22.0, 1.0)
+        }
 
         item.addEventListener('mouseenter', event => {
             fetch('http://localhost:8082',{
@@ -64,4 +56,58 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         })
     })
+
+    let interval = setInterval(async ()=>{
+        data = ""
+
+        for(let room of rooms){
+
+            let co2_level = room.CO2_level_generator.next().value
+            let temp = room.temp_generator.next().value
+            data += `${room.room_id};0;${co2_level}\n${room.room_id};2;${temp}\n`
+        
+        }
+
+        res = await fetch('http://localhost:8082',{
+            headers : {
+                'Content-Type' : 'text/plain'
+            },
+            method : 'POST',
+            body : data
+        })
+
+        res = await fetch('http://localhost:8085')
+
+        data = await res.json()
+
+        
+        for(i=0;i<data.size;i++){
+
+            if(!data.rooms[i].light)
+                rooms[i].element.querySelector('img.light').style.display = "none"
+            else
+                rooms[i].element.querySelector('img.light').style.display = "inline"
+
+            
+            if(!data.rooms[i].ventilation)
+                rooms[i].element.querySelector('img.ventilation').style.display = "none"
+            else
+                rooms[i].element.querySelector('img.ventilation').style.display = "inline"
+
+            
+            if(!data.rooms[i].ac)
+                rooms[i].element.querySelector('img.air-conditioner').style.display = "none"
+            else
+                rooms[i].element.querySelector('img.air-conditioner').style.display = "inline"
+
+            if(!data.rooms[i].presence)
+                rooms[i].element.querySelector('img.presence').style.display = "none"
+            else
+                rooms[i].element.querySelector('img.presence').style.display = "inline"
+
+        }
+
+        console.log(data)
+
+    }, 1000)
 })
