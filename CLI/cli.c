@@ -72,6 +72,10 @@ void displaySummary(Building* building){
 
 }
 
+void displayMenu(){
+    
+}
+
 
 int main(int argc, char **argv){
  
